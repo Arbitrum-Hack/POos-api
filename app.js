@@ -1,6 +1,6 @@
 
 const express = require('express');
-
+const config = require("config");
 const bodyparser = require('body-parser');
 
 const mongoose = require('mongoose');
@@ -40,15 +40,15 @@ app.use("/api/login", loginRoutes);
 app.use("/api/products", productRoutes);
 
 app.use((error, req, res, next) => {
-    console.log(error);
-    const status = res.statusCode || 500;
+    console.log("Error:",error);
+    const status = error.statusCode || 500;
     const message = error.message;
     res.status(status).json({message : message});
 })
-
+console.log("key:",config.get('jwtPrivateKey'))
 mongoose.connect(conFig.mongoUri.toString())
 .then(result => {
-    app.listen(3000)
+    app.listen(5000)
     console.log("successfully started")
 })
 .catch(
