@@ -23,15 +23,15 @@ exports.createUser = async (req, res, next) => {
             throw error;
         }
 
-        const newUser = new User(_.pick(req.body, ['name', 'email', 'industry', 'password', 'address', 'idNumber' ]));
-        
+        const newUser = new User(_.pick(req.body, ['name', 'email', 'industry', 'password', 'address', 'idNumber']));
+
         const salt = await bcrypt.genSalt(10);
         newUser.password = await bcrypt.hash(newUser.password, salt);
 
         const result = await newUser.save();
 
         const pickedUser = _.pick(result, ['_id', 'name', 'email']);
-        res.status(201).json({ 
+        res.status(201).json({
             message: "User created successfully",
             user: pickedUser
         });
@@ -61,8 +61,8 @@ exports.verifyEmailWithToken = async (req, res) => {
         user.isEmailVerified = true;
         await user.save();
         return res.status(200).json({ message: "Email verified" });
-    } catch (error){
-        
+    } catch (error) {
+
         res.status(400).json({ message: 'Invalid or expired token' });
     }
 
@@ -70,16 +70,16 @@ exports.verifyEmailWithToken = async (req, res) => {
 
 
 exports.getUsers = (req, res, next) => {
-User.find()
-.then(user => {
-    res.status(200).json({message: 'User fetched successfully', user: user})
-})
-.catch( err =>{
-    if (!err.statusCode){
-        err.statusCode = 500;
-    }
-    next(err)
-})
+    User.find()
+        .then(user => {
+            res.status(200).json({ message: 'User fetched successfully', user: user })
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err)
+        })
 }
 
 
@@ -90,23 +90,23 @@ exports.sendMailToUser = async (req, res, next) => {
     if (!user) {
         return res.status(400).json({ message: 'Invalid email' });
     }
-    console.log("key:",config.get('jwtPrivateKey'))
+
     const token = jwt.sign(
         { userId: user._id, email: user.email },
         config.get('jwtPrivateKey'),
-        { expiresIn: '1h' } 
+        { expiresIn: '1h' }
     );
 
     const loginLink = `http://your_domain/login?token=${token}`;
 
     const transporter = nodemailer.createTransport({
-        
+
         service: 'gmail',
         auth: {
             user: conFig.hostMailAddress,
             pass: conFig.hostPass,
         },
-        debug : true
+        debug: true
 
     });
 
@@ -131,48 +131,48 @@ exports.sendMailToUser = async (req, res, next) => {
 exports.updateUser = (req, res, next) => {
     const userId = req.user.userId;
     User.findById(userId)
-    .then(singleUser => {
-         if (!singleUser){
-            const error = new Error('Could not find user.')
-            error.statusCode = 404;
-            throw error;
-         }
-         singleUser.contractAddress = req.body.contractAddress
-         
-         return singleUser.save()
-         .then((newUser) => {
-            return res.status(200).json({
-                singleUser : newUser
-             })
-         });
-    })
-    .catch(err => {
-        if (!err.statusCode){
-            err.statusCode = 500;
-        }
-        next(err)
-    })
+        .then(singleUser => {
+            if (!singleUser) {
+                const error = new Error('Could not find user.')
+                error.statusCode = 404;
+                throw error;
+            }
+            singleUser.contractAddress = req.body.contractAddress
+
+            return singleUser.save()
+                .then((newUser) => {
+                    return res.status(200).json({
+                        singleUser: newUser
+                    })
+                });
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err)
+        })
 }
 
 exports.deleteUser = (req, res, next) => {
     const post = req.params.postId;
     User.findById(post)
-    .then(singleUser => {
-        if (!singleUser){
-            const error = new Error('No post with that id')
-            error.statusCode = 404;
-            throw error;
-        }
+        .then(singleUser => {
+            if (!singleUser) {
+                const error = new Error('No post with that id')
+                error.statusCode = 404;
+                throw error;
+            }
 
-        return User.findByIdAndRemove(post);
-    })
-    .then(result => {
-        return res.status(200).json({message: 'Deleted post successfully'});
-    })
-    .catch(error => {
-        if (!error.statusCode){
-            error.statusCode = 500;
-        }
-    })
+            return User.findByIdAndRemove(post);
+        })
+        .then(result => {
+            return res.status(200).json({ message: 'Deleted post successfully' });
+        })
+        .catch(error => {
+            if (!error.statusCode) {
+                error.statusCode = 500;
+            }
+        })
 }
-    
+
