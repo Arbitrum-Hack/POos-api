@@ -3,7 +3,12 @@ const User = require('../models/manufacturer');
 const bcrypt = require('bcrypt');
 
 const jwt = require('jsonwebtoken');
+<<<<<<< Updated upstream
+const config = require('config'); 
+=======
+const config = require('config');
 
+>>>>>>> Stashed changes
 
 exports.LoginUser = async (req, res, next) => {
     try {
@@ -46,6 +51,9 @@ exports.LoginUser = async (req, res, next) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
+
+
 
 
 

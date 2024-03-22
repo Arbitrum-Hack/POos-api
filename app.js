@@ -1,6 +1,6 @@
 
 const express = require('express');
-
+const config = require("config");
 const bodyparser = require('body-parser');
 
 const mongoose = require('mongoose');
@@ -17,8 +17,15 @@ const registerRoutes = require('./routes/register');
 
 const loginRoutes = require('./routes/login');
 
+const cors = require('cors');
+
 app.use(bodyparser.json())
 
+// Configure CORS middleware to allow specific headers
+app.use(cors({
+    origin: ['http://localhost:3000'],
+    allowedHeaders: ['Content-Type', 'x-auth-token'] // Add x-auth-token to the allowed headers
+  }));
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -45,10 +52,10 @@ app.use((error, req, res, next) => {
     const message = error.message;
     res.status(status).json({message : message});
 })
-
+console.log("key:",config.get('jwtPrivateKey'))
 mongoose.connect(conFig.mongoUri.toString())
 .then(result => {
-    app.listen(3000)
+    app.listen(5000)
     console.log("successfully started")
 })
 .catch(
