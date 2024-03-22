@@ -70,7 +70,10 @@ exports.verifyEmailWithToken = async (req, res) => {
 
 
 exports.getUsers = (req, res, next) => {
-User.find()
+
+const userId = req.user.Id;
+
+User.findOne({userId : userId})
 .then(user => {
     res.status(200).json({message: 'User fetched successfully', user: user})
 })
@@ -114,7 +117,7 @@ exports.sendMailToUser = async (req, res, next) => {
         from: `"POosystem" <${conFig.hostMailAddress}>`,
         to: user.email,
         subject: 'POos Email Verification Link',
-        text: `Click on the link to verify email ${loginLink}`
+        text: `This is your email verification link ${loginLink}`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -155,19 +158,18 @@ exports.updateUser = (req, res, next) => {
 }
 
 exports.deleteUser = (req, res, next) => {
-    const post = req.params.postId;
-    User.findById(post)
+    const user = req.user.userId;
+    User.findById(user)
     .then(singleUser => {
         if (!singleUser){
-            const error = new Error('No post with that id')
+            const error = new Error('User not found')
             error.statusCode = 404;
             throw error;
         }
-
-        return User.findByIdAndRemove(post);
+        return User.findByIdAndRemove(user);
     })
     .then(result => {
-        return res.status(200).json({message: 'Deleted post successfully'});
+        return res.status(200).json({message: 'Deleted User Successfully'});
     })
     .catch(error => {
         if (!error.statusCode){

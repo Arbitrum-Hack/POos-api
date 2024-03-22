@@ -7,9 +7,6 @@ const productController = require('../controllers/product');
 const multer = require('multer');
 
 
-const storage = multer.memoryStorage();
-
-const upload = multer({ storage: storage });
 
 const router = express.Router();
 
@@ -19,11 +16,9 @@ router.get('/total', auth, productController.getTotalProducts);
 
 router.get('/categories', auth, productController.getCategories);
 
-router.get('/:productId/', productController.getProduct);
+router.get('/:productId', productController.getProduct);
 
-// router.get('/', auth, productController.getauthenticatedProducts);
-
-router.post('/', auth, upload.single('image'), productController.createProduct);
+router.post('/', auth,  productController.createProduct);
 
 
 module.exports = router;

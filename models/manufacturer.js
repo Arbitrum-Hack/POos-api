@@ -44,11 +44,12 @@ const ManufacturerSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Product',
     }],
+
     idNumber: {
         type: 'string',
         required: true,
-    },
-    
+    }
+
 }, { timestamps: true });
 
 module.exports = mongoose.model('Manufacturer', ManufacturerSchema);
