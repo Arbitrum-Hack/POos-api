@@ -18,4 +18,6 @@ router.put("/:userId", auth, registerController.updateUser);
 
 router.delete('/userId', registerController.deleteUser);
 
+//router.get('/info', auth, registerController.getUser)
+
 module.exports = router;

@@ -17,8 +17,15 @@ const registerRoutes = require('./routes/register');
 
 const loginRoutes = require('./routes/login');
 
+const cors = require('cors');
+
 app.use(bodyparser.json())
 
+// Configure CORS middleware to allow specific headers
+app.use(cors({
+    origin: ['http://localhost:3000'],
+    allowedHeaders: ['Content-Type', 'x-auth-token'] // Add x-auth-token to the allowed headers
+  }));
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
